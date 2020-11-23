@@ -23,6 +23,7 @@
         "views/compra_linea.xml",
         #"wizard/wizard_generate_detail.xml",
         "views/product_ventas.xml",
+        "views/product_category.xml",
     ],
     'demo': [],
     'installable': True,
