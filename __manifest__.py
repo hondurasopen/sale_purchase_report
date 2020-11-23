@@ -2,13 +2,12 @@
 ##############################################################################
 
 {
-    "name": "Analisis de Ventas",
+    "name": "Analisis y reporte de empresas",
     "depends": [
         "product",
         "sale",
         "account",
         "purchase",
-        "sale_margin",
     ],
     "author": "César Alejandro Rodriguez, Honduras",
     "category": "Accounting",
