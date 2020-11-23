@@ -120,7 +120,7 @@ class AccountTreasuryForecast(models.TransientModel):
 
     @api.one
     def getcategorias(self):
-        categ_id = self.env["product.category"].search([('id', '>=', 0)])
+        categ_id = self.env["product.category"].search([('category_landed_cost', '=', False)])
         obj_forecast_categ = self.env["forecast.category"]
         obj_forecast_product = self.env["forecast.product"].search([('treasury_id', '=', self.id)])
         for categ in categ_id:

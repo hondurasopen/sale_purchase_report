@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 <data>
-<record model="ir.module.category" id="module_category_bi">
-            <field name="name">BI</field>
-            <field name="description">Reportes</field>
-            <field name="sequence">4</field>
+
+<record model="ir.module.category" id="module_category_report_hn">
+<field name="name">BI</field>
+<field name="description">Reportes</field>
+<field name="sequence">4</field>
 </record>
 
-<record id="treasury_forecast.group__user" model="res.groups">
-<field name="category_id" ref="module_category_bi"/>
+<record id="group_manager_bi_hn" model="res.groups">
+<field name="category_id" ref="module_category_report_hn"/>
 <field name="name">BI / Usuario</field>
 </record>
 
-<record id="treasury_forecast.group_manager" model="res.groups">
-<field name="category_id" ref="module_category_bi"/>
+<record id="group_manager_bi_hn" model="res.groups">
+<field name="category_id" ref="module_category_report_hn"/>
 <field name="name">BI / Manager</field>
 </record>
 
