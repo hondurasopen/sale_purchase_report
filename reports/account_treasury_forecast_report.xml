@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<report
+			id = "account_treasury_forecast_report"
+			model ="account.treasury.forecast"
+			string="Resumen de Flujo"
+			report_type = "qweb-pdf"
+			name = "account_treasury_forecast.account_treasury_print"
+			file = "account_treasury_forecast.account_treasury_print"				
+		/>
+
+	</data>
+</openerp>

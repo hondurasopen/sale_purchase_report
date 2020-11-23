@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+	<data>
+		<template id="account_treasury_print">
+			<t t-call="report.external_layout">
+			<t t-call="report.html_container">			
+				<t t-foreach="docs" t-as="o">
+						
+	<div class="page">
+<br/>
+<br/>
+	 <div class="oe_structure"/>
+		 <p><h3><strong class="text-center">Resumen de Flujo de Caja</strong></h3><br/></p>
+<div class="row mt32 mb32" id="informations">
+    <div class="col-xs-3">
+        <strong>Fecha de Inicio:</strong>
+        <p t-field="o.start_date"/>
+    </div>
+     <div class="col-xs-3">
+        <strong>Fecha Final:</strong>
+        <p t-field="o.end_date"/>
+    </div>
+     <div class="col-xs-3">
+        <strong>Moneda:</strong>
+        <p t-field="o.currency_id"/>
+    </div>
+</div>
+
+ <div class="row">
+     <div class="col-xs-4 pull-right">
+      <table class="table table-condensed">
+      <tr class="border-black">
+                       <td><strong>Total de Ingresos</strong></td>
+        <td class="text-right">
+	 <span t-field="o.total_ingresos" t-field-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/>
+	</td>
+     </tr>
+	<tr class="border-black">
+                       <td><strong>Total de Egresos</strong></td>
+        <td class="text-right">
+	 <span t-field="o.total_gastos" t-field-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/>
+	</td>
+     </tr>
+    </table>
+</div>
+</div>
+
+
+
+
+<t t-set="months" t-value="get_months(o.start_date,o.end_date)"/>
+<t t-foreach="months" t-as="m">
+		<t t-set="primera" t-value="1"></t>
+<table style="width:100%; font-size:14px; border:1px; border:1px; padding:40px 20px 20px 20px;"> 
+<tbody>						
+<t t-if="primera == 1">	<tr>
+		<th style="width:16%;"><p class="text-left">Documento</p></th>	
+				<t t-foreach="m" t-as="sexteta">
+													<th style="width:14%;"><p class="text-center"><span t-esc="sexteta['dato']"/></p></th>
+											</t>	
+											<t t-set="primera" t-value="0"></t>										
+										</tr>
+									</t>
+									<tr>
+											<td><p class="text-left">Facturas de Ventas</p></td>			
+											<t t-foreach="m" t-as="sexteta">
+													<td><p class="text-center"><span t-esc="'{:,.2f}'.format(tot_by_doc(sexteta['dm'],o.out_invoice_ids,'inv',o))"/></p></td>
+											</t>										
+									</tr>
+									<tr>
+											<td><p class="text-left">Pagos Pendientes</p></td>			
+											<t t-foreach="m" t-as="sexteta">
+													<td><p class="text-center"><span t-esc="'{:,.2f}'.format(tot_by_doc(sexteta['dm'],o.in_invoice_ids,'inv',o))"/></p></td>
+											</t>										
+									</tr>
+									<tr>
+											<td><p class="text-left">Pagos Recurrentes</p></td>
+											<t t-foreach="m" t-as="sexteta">
+													<td><p class="text-center"><span t-esc="'{:,.2f}'.format(tot_by_doc(sexteta['dm'],o.recurring_line_ids,'rec_lines',o))"/></p></td>
+											</t>										
+									</tr>
+									<tr>
+											<td><p class="text-left">Pagos Miscelaneos</p></td>
+											<t t-foreach="m" t-as="sexteta">
+													<td><p class="text-center"><span t-esc="'{:,.2f}'.format(tot_by_doc(sexteta['dm'],o.mchecks_line_ids,'checks',o))"/></p></td>
+											</t>										
+									</tr>
+									<tr>
+											<td><p class="text-left">Requisicion de Fondos</p></td>
+											<t t-foreach="m" t-as="sexteta">
+													<td><p class="text-center"><span t-esc="'{:,.2f}'.format(tot_by_doc(sexteta['dm'],o.funds_req_line_ids,'req_fonds',o))"/></p></td>
+											</t>										
+									</tr>
+											
+									
+								</tbody>
+							</table>
+						</t>
+						
+					</div>
+					
+				</t>
+			</t>
+	</t>
+
+		</template>
+	</data>
+</openerp>

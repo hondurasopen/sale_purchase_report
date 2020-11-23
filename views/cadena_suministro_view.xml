@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+		<record model="ir.ui.view" id="forecast_invoice_search">
+           		 <field name="name">forecast.invoice.search</field>
+           		 <field name="model">forecast.invoice</field>
+           		 <field name="arch" type="xml">
+				<search string ='Buscar'>
+					<field name="partner_id" filter_domain="[('partner_id', 'ilike', self)]" string="Cliente"/>
+					<field name="invoice_date" filter_domain="[('invoice_date', 'ilike', self)]" string="Por Fecha"/>
+					<filter string="Facturas Pagadas" domain="[('state','=','paid')]" name="Facturas Pagadas"/>
+					<filter string="Facturas Abiertas" domain="[('state','=','open')]" name="Facturas Abiertas"/>
+					 <separator/>
+					  <group expand="0" string="Agrupado por">
+           				   <filter string="Cliente"  domain="[]" context="{'group_by':'partner_id'}"/>
+						  <filter string="Estado de Factura"  domain="[]" context="{'group_by':'state'}"/>	
+						<filter string="Agrupar por fecha"  domain="[]" context="{'group_by':'invoice_date'}"/>		
+                   	</group>
+				
+				</search>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="forecast_facturas_main_tree_view">
+            <field name="name">forecast.invoice.tree</field>
+            <field name="model">forecast.invoice</field>
+            <field name="arch" type="xml">  
+                <tree string="Resumen" create="0" delete="0" editable="bottom" readonly="True" colors="green:state =='open';blue:state =='done'">
+                    <field name="partner_id"/>
+                    <field name="invoice_id" />
+					 <field name="invoice_date" readonly="1"/>
+					<!--<field name="date_due" />-->
+					<field name="subtotal" sum="Total"/>
+					<field name="isv" sum="Total"/>
+                    <field name="total_amount" sum="Total"/>
+					<field name="residual_amount" sum="Total"/>
+					<field name="costo" sum="Total"/>
+                    <field name="state" invisible="1"/>
+                  </tree>
+            </field>
+        </record>
+
+		 <record model="ir.ui.view" id="forecast_invoice_graph">
+            <field name="name">forecast.invoice.graph</field>
+            <field name="model">forecast.invoice</field>
+            <field name="arch" type="xml">
+                <graph string="Resumen" type="bar">
+                    <field name="partner_id" type="row"/>
+                    <field name="total_amount" type="measure"/>
+                </graph>
+            </field>
+        </record>
+
+		<record id="action_cadena_forecast_facturas_form1" model="ir.actions.act_window">
+		    <field name="name">Resumen de Ventas</field>
+		    <field name="res_model">forecast.invoice</field>
+		    <field name="view_type">form</field>
+		    <field name="view_mode">tree,graph</field>
+			<field name="domain">[('treasury_id','=',active_id)]</field>
+		    <field name="help">Resumen de Pedidos</field>
+		</record>
+
+
+<!-- AQUI ESTARA EL BLOQUE PARA POS -->
+
+
+<!-- FIN DEL BLOQUE -->
+
+        <record model="ir.ui.view" id="account_delivery_forecast_search_view">
+            <field name="name">treasury.forecast.search.view</field>
+            <field name="model">treasury.forecast</field>
+            <field name="arch" type="xml">
+                <search string="Treasury Forecast">
+                    <field name="name" />
+                    <field name="start_date" />
+                    <field name="end_date" />
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="account_delivery_forecast_tree_view">
+            <field name="name">treasury.forecast.tree</field>
+            <field name="model">treasury.forecast</field>
+            <field name="arch" type="xml">
+                <tree string="Treasury Forecast">
+                    <field name="start_date" />
+                    <field name="end_date" />
+		    		<field name="currency_id"/>
+		   			<field name="total_incoming"/>
+					<field name="utilidad_bruta" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+	
+	<record model="ir.ui.view" id="forecast_product_search">
+           		 <field name="name">forecast.product.search</field>
+           		 <field name="model">forecast.product</field>
+           		 <field name="arch" type="xml">
+				<search string ='Buscar'>
+					<field name="product_id" filter_domain="[('product_id', 'ilike', self)]" string="Producto"/>
+					<field name="category_id" filter_domain="[('category_id', 'ilike', self)]" string="Categoria"/>
+					<separator/>
+					<group expand="0" string="Agrupado por">
+           				  <filter string="Producto"  domain="[]" context="{'group_by':'product_id'}"/>
+						  <filter string="Categoria"  domain="[]" context="{'group_by':'category_id'}"/>	
+                   	</group>
+				</search>
+			</field>
+		</record>
+
+
+	<record model="ir.ui.view" id="account_forecast_product_tree_view">
+            <field name="name">forecast.product.tree</field>
+            <field name="model">forecast.product</field>
+            <field name="arch" type="xml">  
+                <tree string="Resumen de productos" create="0" delete="0" colors="red:total_venta == 0;blue:total_venta >= 0">
+					<field name="category_id" />
+                    <field name="product_id"/>
+                    <field name="unidades" sum="Total"/>
+                    <field name="total_venta" sum="Total"/>
+					<field name="porcentaje_sale" sum="Total"/>
+                  </tree>
+            </field>
+    </record>
+
+	<record model="ir.ui.view" id="forecast_category_tree_view">
+            <field name="name">forecast.category.tree</field>
+            <field name="model">forecast.category</field>
+            <field name="arch" type="xml">  
+                <tree string="Resumen de Categorias" create="0" delete="0" readonly="True" colors="red:unidades == 0;blue:unidades >= 0">
+					<field name="name" />
+                    <field name="unidades" sum="Total"/>
+                    <field name="total_venta" sum="Total"/>
+					 <field name="porcentaje_venta" sum="Total"/>
+                  </tree>
+            </field>
+    </record>
+
+	<record id="action_forecast_product_form1" model="ir.actions.act_window">
+		    <field name="name">Resumen de Productos</field>
+		    <field name="res_model">forecast.product</field>
+		    <field name="view_type">form</field>
+		    <field name="view_mode">tree,form</field>
+			<field name="domain">[('treasury_id','=',active_id)]</field>
+		    <field name="help">Resumen de Productos</field>
+	</record>
+
+
+	<record id="action_cadena_forecast_form" model="ir.actions.act_window">
+		    <field name="name">Analisis de Ventas</field>
+		    <field name="res_model">treasury.forecast</field>
+		    <field name="view_type">form</field>
+		    <field name="view_mode">tree,form</field>
+		    <field name="help">Analisis de Ventas</field>
+	</record>
+
+
+	<record model="ir.ui.view" id="treasury_forecast_form_view">
+        <field name="name">treasury.forecast.form</field>
+        <field name="model">treasury.forecast</field>
+        <field name="arch" type="xml">
+        <form string="Flujo de Efectivo">
+         <header>
+			<button name="action_draft" type="object" string="Borrador" states="progress"/>
+			<button name="action_done" type="object" string="Finalizado" states="draft,progress" class="oe_highlight oe_read_only"/>
+			<button name="button_calculate" type="object" string="Obtener datos" class="oe_highlight"/>
+			<field name="state" widget="statusbar" nolabel="1"/>
+       	</header>
+         <sheet>		       
+		 <div class="oe_button_box" name="button_box">
+             <button class="oe_stat_button"
+					icon="fa-strikethrough"
+                    type="action" name="%(action_cadena_forecast_facturas_form1)d"
+                    string="Detalle Facturas">
+            </button>
+			<button class="oe_stat_button"
+                    icon="fa-tasks"
+                    type="action" name="%(action_forecast_product_form1)d"
+                    string="Productos">
+            </button>
+         </div>
+	  	<!--<separator string="Rango de Fechas"/> -->    
+        <group colspan="4" col="4">
+            <group colspan="4">
+				<group cols="2">          
+			 		<field name="start_date" attrs="{'readonly': [('state','!=','draft')]}"/>
+ 					<field name="currency_id" attrs="{'readonly': [('state','!=','draft')]}"/>  
+				</group>
+			<group cols="2">
+                  <field name="end_date" attrs="{'readonly': [('state','!=','draft')]}"/>	
+			</group>
+        </group>		
+	     <separator string="Resumen de Operaciones"/>
+  			<group colspan="4" col="2">				             
+				<group cols="2">
+<field name="total_incoming" class="oe_subtotal_footer_separator" widget='monetary' options="{'currency_field': 'currency_id'}"/>			 		
+<field name="utilidad_bruta" class="oe_subtotal_footer_separator" widget='monetary' options="{'currency_field': 'currency_id'}"  />
+					
+				</group>  
+				<group cols="2">
+<field name="total_costo" class="oe_subtotal_footer_separator" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+<field name="total_isv" class="oe_subtotal_footer_separator" widget='monetary' options="{'currency_field': 'currency_id'}"/>			 		
+				</group>											
+			</group>
+					    
+<notebook colspan="4">  
+<page string="Categoria de Productos">
+<separator string="Ventas Categorias de Productos"/>
+	<group colspan="4" col="2">				             
+	<group cols="2">
+		<field name="total_ventas_may"/>
+	</group>
+	<group cols="2">
+		<field name="count_facturas"/>
+	</group>											
+</group>	
+<field name="category_ids"/>
+</page> 
+</notebook>
+
+
+        <p class="oe_grey"  colspan="4">
+        Los filtros a continuación, se utilizan para obtener el estado y el monto de los documentos:
+        </p>
+        <group colspan="4">               
+          <separator string="Filters" colspan="4" />
+				<group cols="2">
+		           <field name="check_draft" colspan="2" attrs="{'readonly': [('state','!=','draft')]}"/>
+		           <field name="check_proforma" colspan="2" attrs="{'readonly': [('state','!=','draft')]}" />
+		           <button name="button_calculate" class="oe_highlight" attrs="{'invisible': [('state','!=','draft')]}"
+		            string="Obtener datos" type="object" colspan="4" />
+			
+				</group>
+				 <group cols="2">
+				 	<field name="check_open" colspan="2" attrs="{'readonly': [('state','!=','draft')]}"/>
+					<field name="check_done" colspan="2" attrs="{'readonly': [('state','!=','draft')]}"/>
+				 </group>
+ 
+        </group>
+        </group>
+		</sheet>
+    </form>
+    </field>
+    </record>
+
+	<menuitem id="menu_analisis_root" name="Reportes"
+        sequence="25"
+        web_icon="treasury_forecast,static/description/icon.png"/>
+
+
+        <menuitem id="menu_treasury_forecast" name="Ventas y Productos"
+            parent="menu_analisis_root" sequence="8" />
+
+
+
+        <menuitem action="action_cadena_forecast_form" id="menu_cadena_forecast_form"
+            name="Analisis de ventas" parent="menu_treasury_forecast" />
+
+    </data>
+</openerp>

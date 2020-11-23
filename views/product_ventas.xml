@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="bi_producto_ventas_tree_view">
+            <field name="name">bi.producto.ventas.tree</field>
+            <field name="model">bi.producto.ventas</field>
+            <field name="arch" type="xml">  
+                <tree string="Resumen" editable="bottom" readonly="True" create="0" delete="0" 
+                colors="red:ventas_neta == 0.0;blue:ventas_neta >0">
+                    <field name="product_id" readonly="1"/>
+                    <field name="units_sold" readonly="1" sum="Total"/>
+                    <field name="ventas_neta" readonly="1" sum="Total"/>
+                  </tree>
+            </field>
+        </record>
+		
+		<record model="ir.ui.view" id="bi_producto_ventas_graph_view">
+            <field name="name">bi.producto.ventas.graph</field>
+            <field name="model">bi.producto.ventas</field>
+            <field name="arch" type="xml">
+                <graph string="Summary" type="bar">
+                    <field name="product_id" type="row"/>
+                    <field name="ventas_neta" type="measure"/>
+                </graph>
+            </field>
+        </record>		
+
+		<record id="action_bi_producto_ventas" model="ir.actions.act_window">
+		    <field name="name">Ventas</field>
+		    <field name="res_model">bi.producto.ventas</field>
+		    <field name="view_type">form</field>
+		    <field name="view_mode">tree,form,graph</field>
+			<field name="domain">[('treasury_id','=',active_id)]</field>
+		    <field name="help">Ventas clientes</field>
+		</record>
+
+
+
+        <record model="ir.ui.view" id="bi_producto_sale_tree_view">
+            <field name="name">bi.producto.sale.tree</field>
+            <field name="model">bi.producto.sale</field>
+            <field name="arch" type="xml">
+                <tree string="Treasury Forecast">
+                    <field name="start_date" />
+                    <field name="end_date" />
+		    		<field name="currency_id"/>
+		   			<field name="total_incoming"/>
+					<field name="total_qty"/>
+                </tree>
+            </field>
+        </record>
+
+
+
+	<record id="action_bi_producto_sale" model="ir.actions.act_window">
+		    <field name="name">Productos Vendidos</field>
+		    <field name="res_model">bi.producto.sale</field>
+		    <field name="view_type">form</field>
+		    <field name="view_mode">tree,form</field>
+		    <field name="help">Business Analysis</field>
+	</record>
+
+
+    <record model="ir.ui.view" id="bi_producto_sale_form_view">
+        <field name="name">bi.producto.sale.form</field>
+        <field name="model">bi.producto.sale</field>
+        <field name="arch" type="xml">
+        <form string="Sale Analysis">
+         <header>
+            <button name="action_draft" type="object" string="Draft" states="progress"/>
+            <button name="action_done" type="object" string="Done" states="draft,progress" class="oe_highlight oe_read_only"/>
+            <button name="button_calculate" type="object" string="Obtener Ventas" states="draft" class="oe_highlight"/>
+            <field name="state" widget="statusbar" nolabel="1"/>
+       	</header>
+         <sheet>
+		 <div class="oe_button_box" name="button_box">
+             <button class="oe_stat_button"
+					icon="fa-strikethrough"
+                    type="action" name="%(action_bi_producto_ventas)d"
+                    string="VENTAS X PRODUCTO">
+            </button>
+         </div>
+            <group colspan="4">
+                <group cols="2">
+                    <field name="name"/>
+                    <field name="currency_id" attrs="{'readonly': [('state','!=','draft')]}"/>  
+                </group>
+                <group cols="2">
+					<field name="start_date" attrs="{'readonly': [('state','!=','draft')]}"/>
+                    <field name="end_date" attrs="{'readonly': [('state','!=','draft')]}"/>   
+                </group>
+            </group> 
+            <separator string="Summary"/>
+                <group colspan="4" col="2">
+                <group cols="2">
+                    <field name="total_incoming" class="oe_subtotal_footer_separator" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+              
+                </group>  
+                <group cols="2">
+                    <field name="total_qty"/>
+                </group>
+            </group>
+    <notebook colspan="4">
+    <page string="VENATS X PRODUCTOS">
+        <field name="product_ids"/>
+    </page> 
+   </notebook>
+        </sheet>
+    </form>
+    </field>
+    </record>
+
+    <menuitem action="action_bi_producto_sale" id="menu_product_bi_form" name="Ventas x Producto" 
+    parent="menu_treasury_forecast" />
+
+    </data>
+</openerp>

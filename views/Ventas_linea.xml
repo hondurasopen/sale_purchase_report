@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+		<record model="ir.ui.view" id="invoice_line_report_line_search">
+<field name="name">invoice.line.report.search</field>
+<field name="model">invoice.line.report</field>
+<field name="arch" type="xml">
+<search string ='Buscar'>
+<field name="partner_id" filter_domain="[('partner_id', 'ilike', self)]" string="Cliente"/>
+<field name="product_id" filter_domain="[('product_id', 'ilike', self)]" string="Por Producto"/>
+<separator/>
+<group expand="0" string="Agrupado por">
+	<filter string="Cliente"  domain="[]" context="{'group_by':'partner_id'}"/>
+<filter string="Agrupar por fecha"  domain="[]" context="{'group_by':'date_order'}"/>	
+<filter string="Agrupar por producto"  domain="[]" context="{'group_by':'product_id'}"/>		
+</group>
+
+</search>
+</field>
+</record>
+
+		<record model="ir.ui.view" id="invoice_line_report_tree_view">
+            <field name="name">invoice.line.report.tree</field>
+            <field name="model">invoice.line.report</field>
+            <field name="arch" type="xml">  
+                <tree string="Resumen" editable="bottom" readonly="True" 
+				colors="red:total_amount == 0.0;blue:total_amount > 0.0">
+                    <field name="partner_id" readonly="1"/>
+					<field name="invoice_id" readonly="1"/>
+					<field name="date_order" readonly="1"/>
+					<field name="product_id" readonly="1"/>
+					<field name="name" readonly="1"/>
+					<field name="qty" sum="Total" readonly="1"/>
+                    <field name="total_amount" sum="Total" readonly="1"/>
+                  </tree>
+            </field>
+        </record>
+
+		 <record model="ir.ui.view" id="invoice_line_report_graph">
+            <field name="name">invoice.line.report.graph</field>
+            <field name="model">invoice.line.report</field>
+            <field name="arch" type="xml">
+                <graph string="Resumen" type="bar">
+                    <field name="product_id" type="row"/>
+                    <field name="total_amount" type="measure"/>
+                </graph>
+            </field>
+        </record>
+
+		<record id="action_forecast_invoice_line_form1" model="ir.actions.act_window">
+		    <field name="name">Detalle de Productos</field>
+		    <field name="res_model">invoice.line.report</field>
+		    <field name="view_type">form</field>
+		    <field name="view_mode">tree,form,graph</field>
+			<field name="domain">[('treasury_id','=',active_id)]</field>
+		    <field name="help">Detalle de Productos</field>
+		</record>
+
+	
+<!-- FIN DEL BLOQUE -->
+
+        <record model="ir.ui.view" id="treasury_forecast_line_search_view">
+            <field name="name">treasury.forecast.line.search.view</field>
+            <field name="model">treasury.forecast.line</field>
+            <field name="arch" type="xml">
+                <search string="Treasury Forecast">
+                    <field name="name" />
+                    <field name="start_date" />
+                    <field name="end_date" />
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="treasury_forecast_line_tree_view">
+            <field name="name">treasury.forecast.line.tree</field>
+            <field name="model">treasury.forecast.line</field>
+            <field name="arch" type="xml">
+                <tree string="Treasury Forecast">
+                    <field name="start_date" />
+                    <field name="end_date" />
+		    		<field name="currency_id"/>
+		   			<field name="total_incoming"/>
+					<field name="total_unidades"/>
+                </tree>
+            </field>
+        </record>
+
+
+	<record id="action_treasury_forecast_line" model="ir.actions.act_window">
+		    <field name="name">Productos x Cliente</field>
+		    <field name="res_model">treasury.forecast.line</field>
+		    <field name="view_type">form</field>
+		    <field name="view_mode">tree,form</field>
+		    <field name="help">Ventas de Productos</field>
+	</record>
+
+
+	<record model="ir.ui.view" id="treasury_forecast_line_form_view">
+        <field name="name">treasury.forecast.line.form</field>
+        <field name="model">treasury.forecast.line</field>
+        <field name="arch" type="xml">
+        <form string="Detalle de productos">
+         <header>
+			<button name="action_draft" type="object" string="Borrador" states="progress"/>
+			<button name="action_done" type="object" string="Finalizado" states="draft,progress" class="oe_highlight oe_read_only"/>
+			<button name="button_calculate" type="object" string="Obtener datos" class="oe_highlight"/>
+			<field name="state" widget="statusbar" nolabel="1"/>
+       	</header>
+         <sheet>		       
+		 <div class="oe_button_box" name="button_box">
+             <button class="oe_stat_button"
+					icon="fa-strikethrough"
+                    type="action" name="%(action_forecast_invoice_line_form1)d"
+                    string="Ventas por producto">
+            </button>
+         </div>
+	  	<!--<separator string="Rango de Fechas"/> -->    
+        <group colspan="4" col="4">
+            <group colspan="4">
+				<group cols="2">          
+			 		<field name="start_date" attrs="{'readonly': [('state','!=','draft')]}"/>
+ 					<field name="currency_id" attrs="{'readonly': [('state','!=','draft')]}"/>  
+				</group>
+			<group cols="2">
+                  <field name="end_date" attrs="{'readonly': [('state','!=','draft')]}"/>	
+				  <field name="partner_id" options="{'no_create': True}" attrs="{'readonly': [('state','!=','draft')]}"/>	
+			</group>
+        </group>		
+	     <separator string="Resumen"/>
+  			<group colspan="4" col="2">				             
+				<group cols="2">
+			 		<field name="total_incoming" class="oe_subtotal_footer_separator" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+			 		
+				</group>  
+				<group cols="2">
+<field name="total_unidades" class="oe_subtotal_footer_separator"/>
+				</group>											
+			</group>
+					    
+   <notebook colspan="4">  
+	<page string="Ventas por producto">
+	  <separator string="Ventas por producto"/>
+		<field name="out_invoice_ids"/>
+	 </page> 
+      
+   </notebook>
+
+
+        <p class="oe_grey"  colspan="4">
+        Los filtros a continuación, se utilizan para obtener el estado y el monto de los documentos:
+        </p>
+        <group colspan="4">               
+          <separator string="Filters" colspan="4" />
+				<group cols="2">
+		           <field name="check_draft" colspan="2" attrs="{'readonly': [('state','!=','draft')]}"/>
+		           <field name="check_proforma" colspan="2" attrs="{'readonly': [('state','!=','draft')]}" />
+		           <button name="button_calculate" class="oe_highlight" attrs="{'invisible': [('state','!=','draft')]}"
+		            string="Obtener datos" type="object" colspan="4" />
+			
+				</group>
+				 <group cols="2">
+				 	<field name="check_open" colspan="2" attrs="{'readonly': [('state','!=','draft')]}"/>
+					<field name="check_done" colspan="2" attrs="{'readonly': [('state','!=','draft')]}"/>
+				 </group>
+ 
+        </group>
+        </group>
+		</sheet>
+    </form>
+    </field>
+    </record>
+
+
+        <menuitem action="action_treasury_forecast_line" id="menu_producto_line_form"
+            name="Productos x Cliente" parent="menu_treasury_forecast" />
+
+    </data>
+</openerp>

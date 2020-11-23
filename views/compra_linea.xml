@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+		<record model="ir.ui.view" id="forecast_purchase_line_tree_view">
+            <field name="name">forecast.purchase.line.tree</field>
+            <field name="model">forecast.purchase.line</field>
+            <field name="arch" type="xml">  
+                <tree string="Resumen" editable="bottom" readonly="True" create="0">
+                    <field name="order_id" readonly="1"/>
+                    <field name="partner_id" readonly="1"/>
+                    <field name="date_order" readonly="1"/>
+					<field name="product_id" readonly="1"/>
+					<field name="name" readonly="1"/>
+                    <field name="precio_compra" readonly="1"/>
+					<field name="qty" sum="Total" readonly="1"/>
+                    <field name="total_amount" sum="Total" readonly="1"/>
+					<field name="currency_id" readonly="1"/>
+                  </tree>
+            </field>
+        </record>
+
+		 <record model="ir.ui.view" id="forecast_purchase_line_graph">
+            <field name="name">forecast.purchase.line.graph</field>
+            <field name="model">forecast.purchase.line</field>
+            <field name="arch" type="xml">
+                <graph string="Resumen" type="bar">
+                    <field name="product_id" type="row"/>
+                    <field name="total_amount" type="measure"/>
+                </graph>
+            </field>
+        </record>
+
+		<record id="purchase_line_form1" model="ir.actions.act_window">
+		    <field name="name">Detalle de Productos</field>
+		    <field name="res_model">forecast.purchase.line</field>
+		    <field name="view_type">form</field>
+		    <field name="view_mode">tree,form,graph</field>
+			<field name="domain">[('treasury_id','=',active_id)]</field>
+		    <field name="help">Detalle de Productos</field>
+		</record>
+
+	
+<!-- FIN DEL BLOQUE -->
+
+    <record model="ir.ui.view" id="treasury_forecast_purchase_tree_view">
+        <field name="name">treasury.forecast.purchase.line.tree</field>
+        <field name="model">treasury.forecast.purchase</field>
+        <field name="arch" type="xml">
+            <tree string="Treasury Forecast">
+            	<field name="name"/>
+                <field name="start_date" />
+                <field name="end_date" />
+	    		<field name="num_purchase"/>
+            </tree>
+        </field>
+    </record>
+
+
+
+	<record model="ir.ui.view" id="treasury_forecast_purchase_form_view">
+        <field name="name">treasury.forecast.purchase.line.form</field>
+        <field name="model">treasury.forecast.purchase</field>
+        <field name="arch" type="xml">
+        <form string="Detalle de productos">
+         <header>
+			<button name="button_calculate" type="object" string="Obtener datos" class="oe_highlight"/>
+       	</header>
+         <sheet>		       
+		 <div class="oe_button_box" name="button_box">
+             <button class="oe_stat_button"
+					icon="fa-strikethrough"
+                    type="action" name="%(purchase_line_form1)d"
+                    string="Purchases">
+            </button>
+         </div>
+          <h1>
+              <field name="name" placeholder="Description of purchases..." class="oe_inline"/>
+          </h1>
+	  	<!--<separator string="Rango de Fechas"/> -->    
+        <group colspan="4" col="4">
+            <group colspan="4">
+				<group cols="2">          
+			 		<field name="start_date" />
+ 					<field name="currency_id" invisible="1"/>  
+				</group>
+			<group cols="2">
+                  <field name="end_date" />	
+			</group>
+        </group>		
+	     <separator string="Purchases summary"/>
+	     <group colspan="4">
+  			<field name="num_purchase"/>
+  			</group>
+					    
+   <notebook colspan="4">  
+	<page string="Purchases">
+	  <field name="purchase_ids"/>
+	
+	 </page> 
+      
+   </notebook>
+
+
+        <p class="oe_grey"  colspan="4">
+        
+The filters below are used to obtain the status and amount of the documents. Filters.
+        </p>
+        <group colspan="4">               
+          <separator string="Filters" colspan="4" />
+				<group cols="2">
+		         
+		           <button name="button_calculate" class="oe_highlight" 
+		            string="Obtener datos" type="object" colspan="4" />
+			
+				</group>
+				 <group cols="2">
+				 	<field name="check_open" colspan="2" />
+					<field name="check_done" colspan="2" />
+				 </group>
+ 
+        </group>
+        </group>
+		</sheet>
+    </form>
+    </field>
+    </record>
+
+<record id="action_treasury_forecast_purchase" model="ir.actions.act_window">
+		    <field name="name">Products</field>
+		    <field name="res_model">treasury.forecast.purchase</field>
+		    <field name="view_type">form</field>
+		    <field name="view_mode">tree,form</field>
+		    <field name="help">Products</field>
+	</record>
+
+        <menuitem id="menu_purchases_form" name="Purchases" parent="menu_analisis_root"  sequence="10"/>
+
+        <menuitem action="action_treasury_forecast_purchase" id="menu_purchases_form_detail"
+            name="Purchases Details" parent="menu_purchases_form"  sequence="10"/>
+
+    </data>
+</openerp>

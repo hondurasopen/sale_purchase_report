@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="account_treasury_forecast_invoice_tree_view">
+            <field name="name">delivery.cost.cobros.invoice.tree</field>
+            <field name="model">delivery.cost.cobros.invoice</field>
+            <field name="arch" type="xml">  
+                <tree string="Cobros/Pagos" editable="bottom">
+                    <field name="partner_id"/>
+                    <field name="number_payment" />
+					<field name="date" readonly="1"/>
+                    <field name="reference" readonly="1"/>
+					<field name="memo" readonly="1"/>
+                    <field name="journal_id"/>
+					<field name="amount" sum="Total"/>
+                  </tree>
+            </field>
+        </record>
+		
+		<record model="ir.ui.view" id="delivery_cost_cobros_tree_view">
+            <field name="name">account.treasury.forecast.invoice.tree</field>
+            <field name="model">account.treasury.forecast.invoice</field>
+            <field name="arch" type="xml">  
+                <tree string="Invoices" editable="bottom" readonly="True">
+                    <field name="partner_id"/>
+                    <field name="invoice_id" />
+					 <field name="invoice_date" readonly="1"/>
+					<!--<field name="date_due" />-->
+					<field name="residual_amount" sum="Total"/>
+                    <field name="total_ncredito" sum="Total"/>
+                    <field name="importe_abonado" />
+                    <field name="total_amount" sum="Total"/>
+                    <field name="state" />
+                  </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="account_treasury_forecast_search_view">
+            <field name="name">account.treasury.forecast.search.view</field>
+            <field name="model">account.treasury.forecast</field>
+            <field name="arch" type="xml">
+                <search string="Treasury Forecast">
+                    <field name="name" />
+                    <field name="start_date" />
+                    <field name="end_date" />
+                </search>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="account_treasury_forecast_tree_view">
+            <field name="name">account.treasury.forecast.tree</field>
+            <field name="model">account.treasury.forecast</field>
+            <field name="arch" type="xml">
+                <tree string="Treasury Forecast">
+                    <field name="start_date" />
+                    <field name="end_date" />
+		    		<field name="currency_id"/>
+		   			<field name="total_incoming"/>
+					<field name="total_cobros"/>
+                </tree>
+            </field>
+        </record>
+
+	<record model="ir.ui.view" id="account_treasury_forecast_form_view">
+        <field name="name">account.treasury.forecast.form</field>
+        <field name="model">account.treasury.forecast</field>
+        <field name="arch" type="xml">
+        <form string="Flujo de Efectivo">
+         <header>
+			<button name="action_draft" type="object" string="Borrador" states="progress"/>
+			<button name="action_done" type="object" string="Finalizado" states="draft,progress" class="oe_highlight oe_read_only"/>
+			<button name="button_calculate" type="object" string="Obtener datos" class="oe_highlight"/>
+			<field name="state" widget="statusbar" nolabel="1"/>
+       	</header>
+         <sheet>
+		       
+	  	<separator string="Rango de Fechas"/>     
+        <group colspan="4" col="4">
+            <group colspan="4">
+				<group cols="2">          
+			 		<field name="start_date" attrs="{'readonly': [('state','!=','draft')]}"/>
+ 					<field name="currency_id" attrs="{'readonly': [('state','!=','draft')]}"/>  
+				</group>
+			<group cols="2">
+                  <field name="end_date" attrs="{'readonly': [('state','!=','draft')]}"/>	
+			</group>
+        </group>		
+	     <separator string="Ventas y Cobros"/>
+  			<group colspan="4" col="2">				             
+				<group cols="2">
+					<h3><strong><label string="Total de Ventas:"/></strong></h3>
+			 		<field name="total_incoming" nolabel="1" class="oe_subtotal_footer_separator" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+				</group>  
+				<group cols="2">
+					<h3><strong><label string="Total de Cobros:"/></strong></h3>
+			 		<field name="total_cobros" nolabel="1" class="oe_subtotal_footer_separator" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+ 				
+				</group>											
+			</group>
+
+
+   <notebook colspan="4">
+	<page string="Pagos de Clientes" sequence="1">
+            <field name="cobros_ids" nolabel="1"/>
+       </page>  
+      <page string="Facturas de Ventas" sequence="10">
+		<group colspan="4" col="2">				             
+				<group cols="2">
+					<field name="saldo_pendiente" class="oe_subtotal_footer_separator" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+				</group>
+				<group cols="2">
+					<field name="total_notas"  class="oe_subtotal_footer_separator" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+				</group>											
+			</group>
+          <field name="out_invoice_ids" nolabel="1" readonly="1"/> 	
+      </page>
+                         
+   </notebook>
+
+
+        <p class="oe_grey"  colspan="4">
+        Los filtros a continuación, se utilizan para obtener el estado y el monto de los documentos:
+        </p>
+        <group colspan="4">               
+          <separator string="Filters" colspan="4" />
+				<group cols="2">
+		           <field name="check_draft" colspan="2" attrs="{'readonly': [('state','!=','draft')]}"/>
+		           <field name="check_proforma" colspan="2" attrs="{'readonly': [('state','!=','draft')]}" />
+		           <button name="button_calculate" class="oe_highlight" attrs="{'invisible': [('state','!=','draft')]}"
+		            string="Obtener datos" type="object" colspan="4" />
+			
+				</group>
+				 <group cols="2">
+				 	<field name="check_open" colspan="2" attrs="{'readonly': [('state','!=','draft')]}"/>
+					<field name="check_done" colspan="2" attrs="{'readonly': [('state','!=','draft')]}"/>
+				 </group>
+ 
+        </group>
+        </group>
+		</sheet>
+    </form>
+    </field>
+    </record>
+
+        <record id="action_delivery_cost_forecast_form" model="ir.actions.act_window">
+            <field name="name">Ventas y Cobros</field>
+            <field name="res_model">account.treasury.forecast</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help">Ventas y Cobros</field>
+        </record>
+
+        <!--<menuitem id="menu_account_treasury_forecast" name="Account Treasury Forecast"
+            parent="financial.finanzas_principal" sequence="8" groups="account.group_account_user"/>-->
+        <menuitem action="action_delivery_cost_forecast_form" id="menu_treasury_cost_forecast_form"
+            name="Ventas y Cobros" parent="delivery_cost.menu_reportes" />
+
+    </data>
+</openerp>

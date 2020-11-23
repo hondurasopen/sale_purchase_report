@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<report
+			id = "report_cashflow_detail_1"
+			model ="account.treasury.forecast"
+			string="Reporte de Ventas"
+			report_type = "qweb-pdf"
+			name = "account_treasury_forecast.report_cashflow_detail"
+			file = "account_treasury_forecast.report_cashflow_detail"				
+		/>
+
+		 <record id="report_cashflow_detail_1" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="papert_forecast_ventas"/>
+        </record>
+	</data>
+</openerp>

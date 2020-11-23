@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+
+    <record id="wizard_generate_detail" model="ir.ui.view">
+        <field name="name">Generate Detail by customer</field>
+        <field name="model">treasury.forecast.partner</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Fiscal Sequences">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="start_date"/>
+                        </group>
+                        <group>
+                            <field name="end_date"/>
+                         </group>
+                    </group>
+
+        <group colspan="4">  
+            <separator string="Filters" colspan="4" />
+                <group cols="2">
+                    <p>This is a detail of the states for the sale orders</p>
+                </group>
+                <group cols="2">
+                </group>
+
+        </group>    
+        <footer>
+            <button name="button_calculate" string="Generate" type="object" class="oe_highlight"/>
+            <button class="oe_highlight" special="cancel" string="Cancel"/>
+        </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_wizard_generate_detail_invoice" model="ir.actions.act_window">
+            <field name="name">Shipments and Sale Orders</field>
+            <field name="res_model">treasury.forecast.partner</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="wizard_generate_detail"/>
+            <field name="target">new</field>
+    </record>
+
+    <menuitem action="action_wizard_generate_detail_invoice" id="menu_wizard_generate"
+            name="Shipments and Sale Orders" parent="menu_treasury_forecast" />
+</data>
+</odoo>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+	<record model="ir.ui.view" id="forecast_partner_tree_view">
+            <field name="name">forecast.partner.sale.order.tree</field>
+            <field name="model">forecast.partner.sale.order</field>
+            <field name="arch" type="xml">  
+                <tree string="Invoices"  create="0">
+                    <field name="name"/>
+                    <field name="date_order"/>
+                    <field name="partner_id" />
+                    <field name="total_amount" />
+                    <field name="state_order"/>
+                    <field name="delivery_id"/>
+                    <field name="state_delivery"/>
+                    <field name="guia_rem"/>
+                    <field name="numero_paquetes"/>
+                    <field name="invoice_id"/>
+                  </tree>
+            </field>
+    </record>
+
+    <record id="forecast_partner_report_pivot" model="ir.ui.view">
+        <field name="name">forecast.partner.sale.order.value.pivot</field>
+        <field name="model">forecast.partner.sale.order</field>
+        <field name="arch" type="xml">
+            <pivot string="Invoices">
+                <field name="partner_id" type="row"/>
+                <field name="total_amount" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="forecast_partner_report_graph" model="ir.ui.view">
+        <field name="name">forecast.partner.sale.order.value.graph</field>
+        <field name="model">forecast.partner.sale.order</field>
+        <field name="arch" type="xml">
+            <graph string="Invoices">
+                <field name="partner_id"/>
+                <field name="total_amount" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="forecast_partner_report_search" model="ir.ui.view">
+        <field name="name">forecast.partner.sale.order.report.search</field>
+        <field name="model">forecast.partner.sale.order</field>
+        <field name="arch" type="xml">
+            <search string="Invoices">
+                <field name="partner_id"/>
+                <field name="date_order"/>
+                <group expand="1" string="Group By">
+                    <filter string="Customer" context="{'group_by':'partner_id'}" name='group_by_partner'/>
+                    <filter string="Date" domain="[]" context="{'group_by':'date_order'}" name='group_by_date'/>
+                 </group>                  
+            </search>
+        </field>
+    </record>
+
+     <record id="action_forecast_partner" model="ir.actions.act_window">
+        <field name="name">Shipments and Sale Orders</field>
+        <field name="res_model">forecast.partner.sale.order</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,graph,pivot</field>
+    </record>
+
+    </data>
+</openerp>
